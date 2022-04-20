@@ -5,7 +5,7 @@ from itertools import product
 
 # from ADFGVX import ADFGVX
 
-JOGO_DB_LOCATION = '/var/jail/home/kwesi/jogo/test_jogo.db'
+JOGO_DB_LOCATION = '/var/jail/home/team7/db/jogo.db'
 ROLES = {'instructor': 0, 'assistant': 1, 'student': 2}
 ACTIONS = ["borrowed", "returned"]
 ADMINS = ["jodalyst"]
@@ -68,6 +68,9 @@ def create_DB(db_location):
     c.execute(
         '''CREATE TABLE IF NOT EXISTS history (id text, item_name text, action text);'''
     )
+    c.execute(
+        '''CREATE TABLE IF NOT EXISTS swipe_history (id text, username text, action text, time timestamp);'''
+    )
     return
 
 
@@ -98,6 +101,12 @@ def request_handler(request):
                         current_time, current_time))
                 else:
                     c.execute('''UPDATE users SET last_swiped=? WHERE id=?''', (datetime.datetime.now(), encoded_id))
+                
+                if 'action' in request['form']:
+                    action = request['form']['action']
+                    c.execute('''INSERT INTO swipe_history (id, username, action, time) VALUES (?,?,?,?)''',
+                                (encoded_id, username, action, current_time)
+                            )
 
             all_users = c.execute('''SELECT * FROM users''').fetchall()
 
