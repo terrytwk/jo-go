@@ -79,7 +79,35 @@ def request_handler(request):
     create_DB(JOGO_DB)
 
     if request["method"] == "GET":
-        pass
+        conn = sqlite3.connect(JOGO_DB_LOCATION)
+        c = conn.cursor()
+
+        if "id" in request["values"] and "item" in request["values"]:
+            db_html = "<ul>"
+            id, item = request["values"]["id"], request["values"]["item"]
+            adfgvx = ADFGVX()
+            encoded_id = adfgvx.encrypt(id)[0]
+            user_item_info = c.execute('''SELECT id, item_count FROM items WHERE id=? AND item=?''', (encoded_id, item)).fetchone()
+
+            conn.commit()
+            conn.close()
+
+            return json.dumps({"count": int(user_item_info[1])})
+
+        if 'swipe_history' in request['values']:
+            db_html = "<ul>"
+            all_swipe_history = c.execute('''SELECT * FROM swipe_history;''').fetchall()
+
+            for hist_row in all_swipe_history:
+                db_html += f"\n<li>{hist_row}</li>"
+
+            conn.commit()
+            conn.close()
+
+        return db_html +"<ul>"
+
+        
+
     elif request["method"] == "POST":
         db_html = "<ul>"
         ## the "/receiveID" request
@@ -150,7 +178,7 @@ def request_handler(request):
 
                 return db_html + "</ul>"
             
-            elif 'action' in request['form']:
+            if 'action' in request['form']:
                 action = request['form']['action']
 
                 if action not in ACTIONS:
