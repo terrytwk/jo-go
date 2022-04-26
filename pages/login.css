@@ -1,0 +1,48 @@
+body {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+#login-form {
+    display: flex;
+    flex-direction: column;
+    width: 30%;
+    height: 400px;
+    align-self: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+#title {
+    font-size: 30px;
+    margin-bottom: 40px;
+}
+
+input {
+    height: 50px;
+    font-size: 20px;
+    padding: 10px 20px;
+    margin: 10px 0;
+}
+
+#error-msg {
+    text-align: center;
+    color: red
+}
+
+#submit-btn {
+    border-radius: 15px;
+    background-color: #0082e6;
+    border: none;
+    color: white;
+}
+#submit-btn:hover{
+    background-color: #1b9bff;
+    cursor: pointer;
+}
+
+@media (max-width: 1225px) {
+    #login-form {
+        width: 80%;
+    }
+}

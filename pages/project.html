@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project</title>
+    <link rel="stylesheet" href="project.css">
+    <link rel="stylesheet" href="navbar.css">
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+</head>
+<body>
+    <div id="nav-placeholder">
+    </div>
+    <script>
+        $(function(){
+          $("#nav-placeholder").load("navbar.html");
+        });
+    </script>
+
+    <div class="container">
+        <h1 class="title">Jo Go</h1>
+
+        <h5 class="subtitle">Overview</h5>
+        <p>Amazon operates a line of in-person stores named “Go”, where participating users can tap their phones as they enter the shop, pick up items, and pay automatically after their departure.</p>
+        <p>Why not apply this concept to 6.08 device pickup, which is currently done manually by Teaching and Lab Assistants? As it stands, the Assistants ask a 6.08 student for their Kerb, enter it inside a Google Sheet, and hand them the required device for the lab. In addition to being time consuming and repetitive for the LAs (who would much rather be helping the students), the system also prevents students from being able to access parts all day round (as LAs need to be physically present to assign parts).</p>
+        <p>Enter “JO-GO”, a self pickup solution for 6.08 LAs and students alike. Course staff use a web app to set limits on how many of each component a student needs, and students enter a self-pickup station, tap their MIT ID, and pick up the components specified from automatic drawers, which open after a tap and close when a session ends. Information on which component a user has is attached to their Kerb and stored in a database. Additionally, students can return components after they have been used, which will reflect in the database as well.</p>
+        <p>We envision this to be efficient, helpful, and useful to the 6.08 class, eliminating friction for the instructors, TAs, and students alike.</p>
+
+        <img src="./images/system-diagram.jpg" alt="system-diagram">
+
+        <h5 class="subtitle">Parts/On-Campus Resources</h5>
+
+        <ul>
+            <li><a href="https://www.amazon.com/CHENBO-Weight-Weighing-Pressure-Arduion/dp/B078KS1NBB" target="_blank">Load Cell</a>
+                <ul>
+                    <li class="nested-list">Vendor: Amazon</li>
+                    <li class="nested-list">Unit Price: $8.49</li>
+                    <li class="nested-list">Quantity: 3</li>
+                    <li class="nested-list">Description: Used to detect weight change in drawers</li>
+                </ul>
+            </li>
+            <li><a href="https://www.amazon.com/%C2%AEMifare-Antenna-Proximity-13-56mhz-Arduino/dp/B00UBE1XJW/ref=asc_df_B00UBE1XJW/?tag=hyprod-20&linkCode=df0&hvadid=198072808542&hvpos=&hvnetw=g&hvrand=77984823089779914&hvpone=&hvptwo=&hvqmt=&hvdev=c&hvdvcmdl=&hvlocint=&hvlocphy=9002000&hvtargid=pla-349595675488&psc=1">RFID Sensor</a>
+                <ul>
+                    <li class="nested-list">Vendor: Amazon</li>
+                    <li class="nested-list">Part Number: RC522</li>
+                    <li class="nested-list">Unit Price: $6.93</li>
+                    <li class="nested-list">Quantity: 1</li>
+                    <li class="nested-list">Description: Used to identify user upon tap of MIT ID</li>
+                </ul>
+            </li>
+            <li><a href="https://www.amazon.com/dp/B07X142VGC?&linkCode=sl1&tag=zlufy-20&linkId=edf1daf55c13981f437be9e719a5615b&language=en_US&ref_=as_li_ss_tl">Limit Switch</a>
+                <ul>
+                    <li class="nested-list">Vendor: Amazon</li>
+                    <li class="nested-list">Part Number: KW12-3</li>
+                    <li class="nested-list">Unit Price: $5.99</li>
+                    <li class="nested-list">Quantity: 3</li>
+                    <li class="nested-list">Description: Used to identify when a drawer has been opened/closed</li>
+                </ul>
+            </li>
+            <li><a href="https://www.amazon.com/gp/product/B077X7MKHN/ref=as_li_qf_asin_il_tl?ie=UTF8&tag=makerportal-20&creative=9325&linkCode=as2&creativeASIN=B077X7MKHN&linkId=f0f73f1f79e8e48bf02baf26187a9d2f">Jumper Wires</a>
+                <ul>
+                    <li class="nested-list">Vendor: Amazon</li>
+                    <li class="nested-list">Unit Price: $7.59</li>
+                    <li class="nested-list">Quantity: 1</li>
+                    <li class="nested-list">Description: Used to extend breadboard connection to RFID Sensor as well as Limit Switch and Load Cell</li>
+                </ul>
+            </li>
+            <li><a href="https://www.amazon.com/Duracell-Batteries-9Volt-size-battery/dp/B00009V2QT/ref=asc_df_B00009V2QT/?tag=hyprod-20&linkCode=df0&hvadid=344058097101&hvpos=&hvnetw=g&hvrand=15731338263571212953&hvpone=&hvptwo=&hvqmt=&hvdev=c&hvdvcmdl=&hvlocint=&hvlocphy=9002000&hvtargid=pla-784465740205&psc=1&tag=&ref=&adgrpid=68456165999&hvpone=&hvptwo=&hvadid=344058097101&hvpos=&hvnetw=g&hvrand=15731338263571212953&hvqmt=&hvdev=c&hvdvcmdl=&hvlocint=&hvlocphy=9002000&hvtargid=pla-784465740205">Battery</a>
+                <ul>
+                    <li class="nested-list">Vendor: Amazon</li>
+                    <li class="nested-list">Unit Price: $5.21</li>
+                    <li class="nested-list">Quantity: 1</li>
+                    <li class="nested-list">Description: Used to power servo, LED, and electro</li>
+                </ul>
+            </li>
+            <li>LED
+                <ul>
+                    <li class="nested-list">Provided by 6.08</li>
+                    <li class="nested-list">Quantity: 1</li>
+                    <li class="nested-list">Description: Used to indicate that item has been taken</li>
+                </ul>
+            </li>
+            <li>Electromagnetic Buzzer
+                <ul>
+                    <li class="nested-list">Provided by 6.08</li>
+                    <li class="nested-list">Quantity: 1</li>
+                    <li class="nested-list">Description: Used to indicate that item has been taken</li>
+                </ul>
+            </li>
+            <li>Srvo
+                <ul>
+                    <li class="nested-list">Provided by 6.08</li>
+                    <li class="nested-list">Quantity: 3</li>
+                    <li class="nested-list">Description: Used to lock drawer</li>
+                </ul> 
+            </li>
+        </ul>
+
+        <h5 class="subtitle">Client (ESP32 + Webapp)</h5>
+        
+        <h6 class="section-title">State Machine</h6>
+        <img src="./images/state-machine.jpg" alt="state-machine">
+
+        <h6 class="section-title">ESP32 + Hardware</h6>
+        <p>There are multiple components connected to the ESP32 that will be necessary to produce the desired results. The flow starts with an RFID sensor that takes in information from the user’s MIT ID and sends a post request to the server with that information. The user can then walk up to the drawer that holds the item that they want and open it. A limit switch will be attached to the drawer and change state when the drawer opens. In the drawer, there will be X amount of {item} on top of plywood. Under that plywood will be a functioning 1kg load cell that can detect a change in weight of up to 0.0001g. 1 second after opening the drawer, the weight on the load cell will be zeroed. The user can then take out as many of the item as they want. The user will then close the drawer, changing the state of the limit switch. This will prompt a post request to the server that returns whether the amount of that item taken is valid. There are then 3 cases. If the user took less than the allowed amount, a LED nearby will turn green and a “DING” will be played. If the user took the exact number of items allowed, a LED nearby will turn green, a “DING” will be played, and the drawer will lock.  If the user took more items than allowed, a LED nearby will turn red, an alarm sound will be played, and all drawers will lock. The locking mechanism will work using a servo attached to the front of the inside of the drawer. To lock the drawer, the servo will rotate 90 degrees.</p>
+        <p>Hardware: </p>
+        <ul id>
+            <li class="nested-list">RFID Sensor</li>
+            <li class="nested-list">Limit Switch</li>
+            <li class="nested-list">Load Cell</li>
+            <li class="nested-list">LED</li>
+            <li class="nested-list">Electromagnetic Buzzer</li>
+            <li class="nested-list">Servo</li>
+            <li class="nested-list">Battery</li>
+        </ul>
+        <p>This client will be communicating through HTTP with the server to get students information, post edits to the information, and securely log users in. Detailed documentation on the endpoints will be in the Server Section below.</p>
+
+        <h6 class="section-title">Web Application</h6>
+        <p>In order to display the information in the database, such as items and number of items borrowed by each student, we decided to develop a web application dashboard with authentication. With the authentication, we can display the filtered information depending on the user's access securely, as well as giving different permissions for different user types: staff vs student. For example, 6.08 staff will have both read and write access to all students’ information, but students will only have read access to their own information.</p>
+        
+        <p>In terms of the tech stack, we will be using Next.js and CSS for efficient and dynamic websites. The web application will include the following pages:</p>
+        <ul>
+            <li class="nested-list">Home: intro to our project</li>
+            <li class="nested-list">Login: login page for users</li>
+            <li class="nested-list">Dashboard: table of students and items</li>
+            <li class="nested-list">History: viewing when and how many items each student borrowed</li>
+            <li class="nested-list">Project: project propsal document</li>
+        </ul>
+
+
+        <h5 class="subtitle">Server (Endpoints + Database)</h5>
+        <h6 class="section-title">Web-App Facing Endpoints</h6> 
+        <ul>
+            <li><span class="code">GET /student-items</span>
+                <ul>
+                    <li class="nested-list">Student can check how many of each item they have borrowed</li>
+                    <li class="nested-list">Arg: student ID/kerb</li>
+                    <li class="nested-list">Response: items: count </li>
+                </ul>
+            </li>
+            <li><span class="code">GET /student-history</span>
+                <ul>
+                    <li class="nested-list">Student can see the history with timestamp + item borrowed + # of items to see if there were any mistakes</li>
+                    <li class="nested-list">Arg: student ID/kerb</li>
+                    <li class="nested-list">Response: item:pair with corresponding timestamp </li>
+                </ul>
+            </li>
+            <li><span class="code">POST /log-in</span>
+                <ul>
+                    <li class="nested-list">Allow students/staff to log in</li>
+                    <li class="nested-list">Body: username (kerb), password (student ID #)</li>
+                    <li class="nested-list">Response success/error with encrpyted token </li>
+                    <li class="nested-list">Allow staff to state how many of each items students should be allowed to collect</li>
+                </ul>
+            </li>
+            <li><span class="code">POST /set-item-limit</span></li> 
+        </ul>
+        <h6 class="section-title">ESP32 Facing Endpoints</h6> 
+        <ul>
+            <li><span class="code">GET /recieveID</span>: When a student taps their ID to the RFID sensor, the ESP32 should send a POST request to the server that then stores the MIT specific ID. This ID should remain constant until the RFID sends a POST request with the same ID again for their exit, and then receives a new ID from the next “customer.”</li>
+            <li><span class="code">GET /itemcount</span>:  When the limit switch detects an opening and then the closing of the item-specific drawer, a POST request should be sent to the server. This request should contain what specific item has been taken, how many items were taken depending on the change in weight, and whether it was borrowed or returned. This request handler should also communicate with receiveID to send the unique ID with its updates into the database.</li>
+            <li><span class="code">POST /userpresent</span>: The ESP32 connected to the servo motor serving as the lock for each drawer should keep sending a GET request to the server. The server will return if the “marketplace” is active or not (a user has taped in). If so, it should unlock all the drawers. When the user taps out, then the GET request should return “inactive” and the drawers should become locked if they are not already.</li> 
+        </ul>
+        <h6 class="section-title">Database Structure</h6> 
+        <p>As our server needs to store and display user’s interaction with the marketplace, we need a database that can give both the most recent activity of users, and the history of each “transaction.”</p>
+        <ul>
+            <li class="nested-list">Users Table: Row for each transaction, columns include user kerb/ID + first name + last name + item’s name + borrowed/returned</li>
+            <li class="nested-list">Items Table: Row for each transaction, columns include user kerb/ID + first name + last name + item’s name + number of such items checked out</li>
+            <li class="nested-list">History Table: User kerb/ID + first name + last name for admin privileges</li> 
+        </ul>
+
+        <h5 class="subtitle">Technical Challenges</h5>
+        <p>Most of the challenges we face will be on the hardware side. With all of these possible issues we are super open to any kind of advice.</p>
+        <p>Since we are trying to determine the exact number of items taken using the load sensor, we need to create a system that can adapt to any type of item and not be prone to sudden movements and other physical errors. The adaptability issue can possibly be solved by creating a calibration system for each drawer. Before a drawer is “active,” the load sensor can get an estimate for the weight of one item before the rest are placed inside. The physical error issue might be solved by filtering the received data or binning the signal according to the calibration. There is also the issue of safe wiring and working with the dimensions of the drawer itself when implementing the load sensor. Also, there are many possible difficulties we could run into with the locking system. When should the servo motors unlock and relock? How could we detect mechanical errors? We haven’t used the RFID before as well, so we have to figure out its implementation alongside the ESP32. Given the amount of online resources though, this should not be a huge difficulty.</p>
+
+        <h5 class="subtitle">Work Split</h5>
+        <p>The work is split so that we each have individual “focuses” but also can cover different parts of the project to understand it as a whole. Reference the milestone timeline for more insights.</p>
+
+    </div>
+
+</body>
+</html>

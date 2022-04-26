@@ -1,0 +1,54 @@
+.container {
+    margin: 50px;
+    display: flex;
+    flex-direction: column;
+}
+
+.title {
+    text-align: center;
+    margin: 50px 0;
+    font-size: 50px;
+}
+
+.subtitle {
+    font-size: 30px;
+    margin: 20px 0px;
+}
+
+p {
+    margin: 15px 0;
+}
+
+img {
+    max-width: 80%;
+    max-height: 600px;
+    align-self: center;
+}
+
+li {
+    list-style-type: disc;
+    margin: 5px 0;
+    margin-left: 20px
+}
+
+.nested-list {
+    list-style-type: circle;
+    margin-left: 40px;
+}
+
+.section-title {
+    text-decoration: underline;
+    font-size: 20px;
+    font-weight: 100;
+}
+
+.code {
+    font-family: Monaco, monospace;
+    line-height: 100%;
+    background-color: #eee;
+    padding: 0.2em;
+    letter-spacing: -0.05em;
+    word-break: normal;
+    border-radius: 5px;
+    width: fit-content
+}

@@ -1,0 +1,30 @@
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 20px;
+}
+  
+td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
+  
+tr:nth-child(even) {
+    background-color: #dddddd;
+}
+
+#admin-setting {
+    margin: 30px 0;
+}
+
+input {
+    margin-left: 30px;
+}
+
+#welcome-msg {
+    font-size: 30px;
+    text-align: center;
+    margin-top: 20px;
+}

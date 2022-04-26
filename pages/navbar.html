@@ -1,0 +1,37 @@
+<nav id="nav-placeholder">
+    <input type="checkbox" id="check">
+    <label for="check" class="checkbtn">
+        <i class="fa fa-bars"></i>
+    </label>
+    <label class="logo"><a href="home.html" id="home-logo">Jo Go</a></label>
+    <ul>
+        <!-- Add class="active" to make a link active -->
+        <li><a href="home.html" id="logo">Home</a></li>
+        <li id="dashboard-tab"><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="project.html">Project</a></li>
+        <li id="login-tab"><a href="login.html">Login</a></li>
+        <li id="logout-tab" onclick="logout()"><a href="#">Logout</a></li>
+        <script>
+            let token = localStorage.getItem("token")
+            // user not logged in
+            if (!token) {
+                const dashboardTab = document.getElementById("dashboard-tab");
+                dashboardTab.remove();
+
+                const logoutTab = document.getElementById("logout-tab");
+                logoutTab.remove();
+            } else { // user loggedin
+                const loginTab = document.getElementById("login-tab");
+                loginTab.remove();
+            }
+
+            function logout() {
+                window.location.replace("home.html");
+                localStorage.removeItem('token')
+                localStorage.removeItem('user-name')
+                localStorage.removeItem('staff')
+            }
+
+        </script>
+    </ul>
+</nav>

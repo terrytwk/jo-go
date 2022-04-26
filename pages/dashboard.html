@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="navbar.css">
+    <link rel="stylesheet" href="login.css">
+    <link rel="stylesheet" href="dashboard.css">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <script>
+        // if user is not logged in, redirect them to login
+        if (!localStorage.getItem("token")){
+            window.location.replace("login.html");
+        }
+
+        // condition to only show admin setting if the user is a staff
+        (function(window, document, undefined){
+        window.onload = init;
+
+        function init(){
+            if (!localStorage.getItem("is_staff")) {
+                let admin_div = document.getElementById("admin-setting")
+                admin_div.innerHTML = ""
+            }
+
+            let welcomeMsg = document.getElementById("welcome-msg")
+            welcomeMsg.innerHTML = `Welcome ${localStorage.getItem("user-name")}!`
+
+        }
+
+        })(window, document, undefined);
+
+
+
+        // function to change limit on the number of items
+        function changeLimit() {
+            return alert("changing")
+            let itemName = document.getElementById('item-name').value
+            let itemLimit = document.getElementById('new-limit').value
+            let error_msg = document.getElementById('error-msg')
+
+            // resetting error message
+            error_msg.innerHTML = ""
+
+            fetch("http://608dev-2.net/sandbox/sc/terrytwk/web-routing/server/server.py", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+                },
+                body: new URLSearchParams({
+                    'endpoint': 'set-limit',
+                    'item-name': itemName,
+                    'item-limit': itemLimit
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                console.log(data.status)
+                if (data.status == 200) {
+                    alert(`successfully changed ${itemName}'s new limit to ${itemLimit}`)
+                    document.getElementById('item-name').value = "" 
+                    document.getElementById('new-limit').value = "" 
+                } else {
+                    error_msg.innerHTML = data.message
+                }
+            })
+            .catch(err => console.log(err))
+        }
+
+    </script>
+</head>
+<body>
+    <div id="nav-placeholder">
+    </div>
+    <script>
+        $(function(){
+          $("#nav-placeholder").load("navbar.html");
+        });
+    </script>
+
+    <h3 id="welcome-msg"></h3>
+
+    <div id="admin-setting">
+        <form id="admin-form" onsubmit="event.preventDefault(); changeLimit()">
+            <h1>Admin Setting</h1>
+    
+            <input type="text" id="item-name" placeholder="Item Name">
+    
+            <input type="number" id="new-limit" placeholder="New Limit">
+    
+            <span id="error-msg"></span>
+    
+            <input type="submit" value="Change" id="submit-btn">
+        </form>
+
+        <table>
+            <tr>
+                <th>item 1 limit</th>
+                <th>item 2 limit</th>
+                <th>item 3 limit</th>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>5</td>
+                <td>10</td>
+            </tr>
+        </table>
+    </div>
+
+    <h1>Dashboard</h1>
+
+    <table>
+        <tr>
+            <th>Company</th>
+            <th>Contact</th>
+            <th>Country</th>
+        </tr>
+        <tr>
+            <td>Alfreds Futterkiste</td>
+            <td>Maria Anders</td>
+            <td>Germany</td>
+        </tr>
+        <tr>
+            <td>Centro comercial Moctezuma</td>
+            <td>Francisco Chang</td>
+            <td>Mexico</td>
+        </tr>
+        <tr>
+            <td>Ernst Handel</td>
+            <td>Roland Mendel</td>
+            <td>Austria</td>
+        </tr>
+        <tr>
+            <td>Island Trading</td>
+            <td>Helen Bennett</td>
+            <td>UK</td>
+        </tr>
+        <tr>
+            <td>Laughing Bacchus Winecellars</td>
+            <td>Yoshi Tannamuri</td>
+            <td>Canada</td>
+        </tr>
+        <tr>
+            <td>Magazzini Alimentari Riuniti</td>
+            <td>Giovanni Rovelli</td>
+            <td>Italy</td>
+        </tr>
+    </table>
+
+</body>
+</html>
