@@ -5,7 +5,7 @@ sys.path.append('/var/jail/home/team7/server')
 def request_handler(request):
     # importing functions
     from database import create_database
-    from authentication import login, signup
+    from authentication import login, signup, ADFGVX
     from items import change_item_count, get_items, set_item_limit
 
     # initialize databases
@@ -50,7 +50,8 @@ def request_handler(request):
         # change user's items data & add to history
         item_name = body.get("item_name", None)
         item_count = body.get('item_count', None)
-        return change_item_count(item_name, item_count)
+        action = body.get('action', None)
+        return change_item_count(item_name, item_count, action)
         pass
     elif method == "POST" and endpoint == "tap-in":
         # taps user in with id
