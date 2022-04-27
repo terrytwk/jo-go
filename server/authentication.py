@@ -127,3 +127,38 @@ def signup(kerb, id, first_name, last_name):
 
     return json.dumps({'status': 200, "message": "Signup Successful", 'id': token, 'staff': False})
 
+
+def tap_in(id):
+    """
+    Taps user in. Creates user account if it does not exist already.
+
+    Parameters:
+    * id (int): user's student id
+
+    Returns:
+        token (int) encrypted student id 
+    """
+    adfgvx = ADFGVX()
+    encoded_id = adfgvx.encrypt(id)[0]
+    conn = sqlite3.connect(JOGO_DB_LOCATION)
+    c = conn.cursor()
+
+    if id:
+        user_exists = c.execute('''SELECT id FROM USERS where id=?;''', (encoded_id, )).fetchone()
+        current_time = datetime.datetime.now()
+
+        if not user_exists:
+            c.execute('''INSERT INTO users (id, user_type, created_at) VALUES (?,?,?);''', (
+                encoded_id,
+                "student",
+                current_time))
+        else:
+            c.execute('''UPDATE users SET last_swiped=? WHERE id=?''', (datetime.datetime.now(), encoded_id))
+        
+        
+        c.execute('''INSERT INTO swipe (id, time) VALUES (?,?)''',
+                        (encoded_id, current_time))
+
+    conn.commit()
+    conn.close()
+    return json.dumps({"code": 200, "message": f'''student with id {encoded_id} successfully signed in''', "id": encoded_id})

@@ -8,13 +8,13 @@ from authentication import ADFGVX
 
 JOGO_DB_LOCATION = '/var/jail/home/team7/db/jogo.db'
 
-def change_item_count(item_name, item_count, action):
+def change_item_count(item_name, item_count):
     """
     Adds or Removes user's items by item_count
 
     Parameters:
     * item_name (str): name of the item we are changing
-    * item_count (int): amount we are changing items by (negative := returning; positive := borrowing)
+    * item_count (int): current amount of items owned by user
 
     Returns:
         success or fail (if borrowed amount is more than max limit) message and user's total number borrowed of that item
@@ -26,41 +26,50 @@ def change_item_count(item_name, item_count, action):
 
     conn = sqlite3.connect(JOGO_DB_LOCATION)
     c = conn.cursor()
+    status = 200
 
     encoded_id = c.execute('''SELECT id from swipe ORDER BY time DESC LIMIT 1''').fetchone()[0]
-    item_limit = c.execute('''SELECT max_limit from item_limits WHERE item_name=?''', (item_name, )).fetchone()[0]
+    item_limit = c.execute('''SELECT max_limit from item_limits WHERE item_name=?''', (item_name, )).fetchone()
+    prev_items = c.execute('''SELECT item_count from items WHERE id=? AND item_name=?''', (encoded_id, item_name)).fetchone()
 
-    if int(item_count) > item_limit:
-        conn.commit()
-        conn.close()
-        return json.dumps({"status": 400, "message": f'''Transaction failed. User with id {encoded_id} removed > than {item_count} of {item_name}s.'''})
-    
-    c.execute(
-        '''INSERT INTO items (id, item, item_count) VALUES (?,?,?);''',
+    if not prev_items:
+        prev_items = 0
+        c.execute(
+        '''INSERT INTO items (id, item_name, item_count) VALUES (?,?,?);''',
           (encoded_id, item_name, int(item_count))
     )
+    else:
+        prev_items = prev_items[0]
+        c.execute(
+            '''UPDATE items SET item_count=? WHERE id=? AND item_name=?''',
+            (int(item_count), encoded_id, item_name)
+        )
+    
+    diff = int(item_count) - prev_items
 
-    # TODO: verify action column
+    if item_limit and abs(diff) > item_limit[0]:
+       status = 400
+    
+    action = "returned" if diff < 0 else "borrowed"
+
     c.execute(
-        '''INSERT INTO history (id, item, action) VALUES (?,?,?);''',
+        '''INSERT INTO history (id, item_name, action) VALUES (?,?,?);''',
           (encoded_id, item_name, action)
     )
 
     conn.commit()
     conn.close()
 
-    # TODO where to get totals from?
-
     return json.dumps(
         {
-        "status": 200, 
-        "message": f'''User with id {encoded_id} successfully removed {item_count} {item_name}s.''',
-        "action": 0 if action == "borrow" else 1, "count": int(item_count)
+        "status": status, 
+        "message": f'''User with id {encoded_id} {action} {abs(diff)} {item_name}s and currently has {item_count} {item_name}s.''',
+        "item_count": int(item_count)
         }
     )
     
 
-def get_items(id):
+def get_items(id=None, item=None):
     """
     Gets user's items data
 
@@ -72,20 +81,31 @@ def get_items(id):
     """
     # encrypt the id
     # get all the items and their counts from items table
+    cipher = ADFGVX()
 
     user_items = {"status": 200, "message": "GET request successful."}
     conn = sqlite3.connect(JOGO_DB_LOCATION)
     c = conn.cursor()
 
+    # If ID is defined, encrypt it and use it, otherwise simply get from the swipe history table
+    if id != None:
+        encoded_id = cipher.encrypt(id)
+    else:
+        encoded_id = c.execute('''SELECT id from swipe ORDER BY time DESC LIMIT 1''').fetchone()[0]
+    
     user_item_db_info = c.execute(
-        '''SELECT * FROM items WHERE id=?''', (id)
+        '''SELECT * FROM items WHERE id=?''', (encoded_id,)
     ).fetchall()
+
 
     for id, item, item_count in user_item_db_info:
         user_items[item] = item_count
-
+    
     conn.commit()
     conn.close()
+
+    if item != None:
+        return json.dumps({"status": 200,  "message": "GET request successful.", item: user_items[item]})
 
     return json.dumps(user_items)
 
@@ -112,7 +132,7 @@ def set_item_limit(id, item_name, item_limit):
     ).fetchone()
 
     if access_level[0] != "staff":
-        return json.dumps({"code": "400", "message": "Error. User cannot set item limits."})
+        return json.dumps({"status": "400", "message": "Error. User cannot set item limits."})
     
     item_exists = c.execute('''SELECT * FROM item_limits WHERE item_name=?''', (item_name, )).fetchone()
 

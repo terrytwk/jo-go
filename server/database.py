@@ -36,6 +36,7 @@ def create_database():
 
     # swipe table
     # stores currently tapped in user
+  
     c.execute(
         '''CREATE TABLE IF NOT EXISTS swipe (id text, time timestamp);'''
     )
