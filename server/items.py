@@ -124,11 +124,13 @@ def set_item_limit(id, item_name, item_limit):
     """
     # check if the id is staff's
     # change item_limits table
-
+    cipher = ADFGVX()
+    encoded_id = cipher.encrypt(id)[0]
+    
     conn = sqlite3.connect(JOGO_DB_LOCATION)
     c = conn.cursor()
     access_level = c.execute(
-        '''SELECT user_type FROM users WHERE id=?''', (id, )
+        '''SELECT user_type FROM users WHERE id=?''', (encoded_id, )
     ).fetchone()
 
     if access_level[0] != "staff":
@@ -138,15 +140,15 @@ def set_item_limit(id, item_name, item_limit):
 
     if item_exists:
         c.execute(
-            '''UPDATE item_limits SET max_limit=? WHERE item=?''', (item_limit, item_name)
+            '''UPDATE item_limits SET max_limit=? WHERE item_name=?''', (item_limit, item_name)
         )
-        action = "added"
+        action = "updated"
     else:
         c.execute(
             '''INSERT INTO item_limits (item_name, max_limit) VALUES (?, ?)''',
             (item_name, item_limit)
         )
-        action = "updated"
+        action = "added"
         
     
     conn.commit()
