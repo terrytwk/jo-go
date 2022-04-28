@@ -98,8 +98,16 @@ def get_items(id=None, item=None):
     ).fetchall()
 
 
-    for id, item, item_count in user_item_db_info:
-        user_items[item] = item_count
+    if not user_item_db_info:
+        c.execute(
+        '''INSERT INTO items (id, item_name, item_count) VALUES (?,?,?);''',
+          (encoded_id, item, 0)
+        )
+        user_items[item] = 0
+          
+    else:
+        for id, item, item_count in user_item_db_info:
+            user_items[item] = item_count
     
     conn.commit()
     conn.close()
