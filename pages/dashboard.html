@@ -27,18 +27,45 @@
                 let admin_div = document.getElementById("admin-setting")
                 admin_div.innerHTML = ""
             } else {
-                createTable("items-limits", "items-limits-table")
+                createItemLimitTable("items-limits", "items-limits-table")
             }
 
             let welcomeMsg = document.getElementById("welcome-msg")
             welcomeMsg.innerHTML = `Welcome ${localStorage.getItem("user-name")}!`
 
-            createTable("all-items", "items-table")
+            createItemsTable("all-items", "items-table")
         }
 
         })(window, document, undefined);
         
-        function createTable(endpoint, elementID) {
+        function createItemsTable(endpoint, elementID) {
+            // fetch items
+            let token = localStorage.getItem("token")
+            fetch(`http://608dev-2.net/sandbox/sc/team7/server/server.py?endpoint=${endpoint}&id=${token}`)
+            .then(res => res.json())
+            .then(data => {
+                // insert into table
+                let headerList = Object.keys(data.items[0]) // list
+                let studentList = data.items // list of dicts
+                let table = document.getElementById(elementID)
+                let content = `
+                    <tr>
+                        ${headerList.map((h) => `<th>${h}</th>`).join("")}
+                    </tr>
+                    ${
+                        studentList.map((student) => `
+                        <tr>
+                            ${Object.values(student).map((c) => `<td>${c}</td>`).join("")}
+                        </tr>
+                        `).join("") 
+                    }
+                `
+                table.innerHTML = content
+            })
+            .catch(err => console.log(err)) 
+        }
+
+        function createItemLimitTable(endpoint , elementID) {
             // fetch items
             let token = localStorage.getItem("token")
             fetch(`http://608dev-2.net/sandbox/sc/team7/server/server.py?endpoint=${endpoint}&id=${token}`)
