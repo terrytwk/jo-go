@@ -118,7 +118,7 @@ def get_items(id=None, item=None):
     return json.dumps(user_items)
 
 
-def set_item_limit(id, item_name, item_limit):
+def set_item_limit(encoded_id, item_name, item_limit):
     """
     Changes the maximum number of items a student can take
 
@@ -132,17 +132,15 @@ def set_item_limit(id, item_name, item_limit):
     """
     # check if the id is staff's
     # change item_limits table
-    cipher = ADFGVX()
-    encoded_id = cipher.encrypt(id)[0]
-    
     conn = sqlite3.connect(JOGO_DB_LOCATION)
     c = conn.cursor()
-    access_level = c.execute(
-        '''SELECT user_type FROM users WHERE id=?''', (encoded_id, )
-    ).fetchone()
 
-    if access_level[0] != "staff":
-        return json.dumps({"status": "400", "message": "Error. User cannot set item limits."})
+    # user authorization
+    # access_level = c.execute(
+    #     '''SELECT user_type FROM users WHERE id=?''', (encoded_id, )
+    # ).fetchone()
+    # if access_level[0] != "staff":
+    #     return json.dumps({"status": "400", "message": "Error. User cannot set item limits."})
     
     item_exists = c.execute('''SELECT * FROM item_limits WHERE item_name=?''', (item_name, )).fetchone()
 
@@ -156,11 +154,56 @@ def set_item_limit(id, item_name, item_limit):
             '''INSERT INTO item_limits (item_name, max_limit) VALUES (?, ?)''',
             (item_name, item_limit)
         )
-        action = "added"
-        
+        action = "added"    
     
     conn.commit()
     conn.close()
 
     return json.dumps({"status": 200, "message": f'''User successfully {action} item limits.'''})
-        
+
+def get_all_items(encoded_id):
+    conn = sqlite3.connect(JOGO_DB_LOCATION)
+    c = conn.cursor()
+
+    # access_level = c.execute(
+    #     '''SELECT user_type FROM users WHERE id=?''', (encoded_id, )
+    # ).fetchone()
+    # if access_level[0] != "staff":
+    #     is_staff = True
+    # else:
+    #     is_staff = False
+    
+
+    items_limits_data = c.execute('''SELECT item_name, item_count FROM items WHERE id=?;''', (encoded_id, )).fetchall()
+    
+    conn.commit()
+    conn.close()
+
+    all_items = {}
+    for item_name, item_count in items_limits_data:
+        all_items[item_name] = item_count
+
+    return json.dumps({"status": 200, "message": "successfully got user's items", "items": all_items})
+
+
+def get_all_item_limits(encoded_id):
+    conn = sqlite3.connect(JOGO_DB_LOCATION)
+    c = conn.cursor()
+
+    # user authorization
+    # access_level = c.execute(
+    #     '''SELECT user_type FROM users WHERE id=?''', (encoded_id, )
+    # ).fetchone()
+    # if access_level is None or access_level[0] != "staff":
+    #     return json.dumps({"status": "400", "message": "Error. User cannot set item limits."})
+
+    items_limits_data = c.execute('''SELECT * FROM item_limits;''').fetchall()
+    
+    conn.commit()
+    conn.close()
+
+    all_items_limits = {}
+    for item_name, max_limit in items_limits_data:
+        all_items_limits[item_name] = max_limit
+
+    return json.dumps({"status": 200, "message": "successfully got user's items", "items": all_items_limits}) 

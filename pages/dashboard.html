@@ -22,23 +22,48 @@
         window.onload = init;
 
         function init(){
-            if (!localStorage.getItem("is_staff")) {
+            is_staff = localStorage.getItem("is_staff")
+            if (!is_staff) {
                 let admin_div = document.getElementById("admin-setting")
                 admin_div.innerHTML = ""
+            } else {
+                createTable("items-limits", "items-limits-table")
             }
 
             let welcomeMsg = document.getElementById("welcome-msg")
             welcomeMsg.innerHTML = `Welcome ${localStorage.getItem("user-name")}!`
 
+            createTable("all-items", "items-table")
         }
 
         })(window, document, undefined);
-
+        
+        function createTable(endpoint, elementID) {
+            // fetch items
+            let token = localStorage.getItem("token")
+            fetch(`http://608dev-2.net/sandbox/sc/team7/server/server.py?endpoint=${endpoint}&id=${token}`)
+            .then(res => res.json())
+            .then(data => {
+                // insert into table
+                let headerList = Object.keys(data.items)
+                let contentList = Object.values(data.items)
+                let table = document.getElementById(elementID)
+                let content = `
+                    <tr>
+                        ${headerList.map((h) => `<th>${h}</th>`).join("")}
+                    </tr>
+                    <tr>
+                        ${contentList.map((c) => `<td>${c}</td>`).join("")}
+                    </tr>
+                `
+                table.innerHTML = content
+            })
+            .catch(err => console.log(err)) 
+        }
 
 
         // function to change limit on the number of items
         function changeLimit() {
-            return alert("changing")
             let itemName = document.getElementById('item-name').value
             let itemLimit = document.getElementById('new-limit').value
             let error_msg = document.getElementById('error-msg')
@@ -46,27 +71,27 @@
             // resetting error message
             error_msg.innerHTML = ""
 
-            fetch("http://608dev-2.net/sandbox/sc/terrytwk/web-routing/server/server.py", {
+            fetch("http://608dev-2.net/sandbox/sc/team7/server/server.py", {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
                 },
                 body: new URLSearchParams({
-                    'endpoint': 'set-limit',
-                    'item-name': itemName,
-                    'item-limit': itemLimit
+                    'endpoint': "set-item-limit",
+                    'item_name': itemName,
+                    'item_limit': itemLimit
                 })
             })
             .then(res => res.json())
             .then(data => {
-                console.log(data.status)
+                console.log(data)
                 if (data.status == 200) {
-                    alert(`successfully changed ${itemName}'s new limit to ${itemLimit}`)
                     document.getElementById('item-name').value = "" 
                     document.getElementById('new-limit').value = "" 
                 } else {
                     error_msg.innerHTML = data.message
                 }
+                location.reload()
             })
             .catch(err => console.log(err))
         }
@@ -97,8 +122,8 @@
             <input type="submit" value="Change" id="submit-btn">
         </form>
 
-        <table>
-            <tr>
+        <table id="items-limits-table">
+            <!-- <tr>
                 <th>item 1 limit</th>
                 <th>item 2 limit</th>
                 <th>item 3 limit</th>
@@ -107,14 +132,14 @@
                 <td>3</td>
                 <td>5</td>
                 <td>10</td>
-            </tr>
+            </tr> -->
         </table>
     </div>
 
     <h1>Dashboard</h1>
 
-    <table>
-        <tr>
+    <table id="items-table">
+        <!-- <tr>
             <th>Company</th>
             <th>Contact</th>
             <th>Country</th>
@@ -148,7 +173,7 @@
             <td>Magazzini Alimentari Riuniti</td>
             <td>Giovanni Rovelli</td>
             <td>Italy</td>
-        </tr>
+        </tr> -->
     </table>
 
 </body>

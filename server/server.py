@@ -6,7 +6,7 @@ def request_handler(request):
     # importing functions
     from database import create_database
     from authentication import login, signup, tap_in, ADFGVX
-    from items import change_item_count, get_items, set_item_limit
+    from items import change_item_count, get_items, set_item_limit, get_all_items, get_all_item_limits
 
     # initialize databases
     create_database()
@@ -34,15 +34,16 @@ def request_handler(request):
         return signup(kerb, id, first_name, last_name) 
     elif method == "POST" and endpoint == "set-item-limit":
         # staff sets the max item limit per item
-        id = body.get("id", None)
+        encoded_id = body.get("id", None)
         item_name = body.get("item_name", None)
         item_limit = body.get('item_limit', None)
-        return set_item_limit(id, item_name, item_limit)
-    elif method == "GET" and endpoint == "items":
-        # get user's item data
-        id = params.get("id", None)
-        item = params.get("item", None)
-        return get_items(id, item)
+        return set_item_limit(encoded_id, item_name, item_limit)
+    elif method == "GET" and endpoint == "all-items":
+        encoded_id = params.get("id", None)
+        return get_all_items(encoded_id)
+    elif method == "GET" and endpoint == "items-limits":
+        encoded_id = params.get("id", None)
+        return get_all_item_limits(encoded_id)
     elif method == "GET" and endpoint == "history":
         # get user's history
         pass
@@ -56,6 +57,11 @@ def request_handler(request):
         # taps user in with id
         id = body.get("id", None)
         return tap_in(id)
+    elif method == "GET" and endpoint == "items":
+        # get user's item data
+        id = params.get("id", None)
+        item = params.get("item", None)
+        return get_items(id, item)
     # for testing ---------------------------------------------------------------------------------
     elif method == "POST" and endpoint == "test":
        return json.dumps({'status': 200, 'message': f"POST request received. \n Request: {request}"}) 
