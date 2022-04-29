@@ -94,7 +94,7 @@ def get_items(id=None, item=None):
         encoded_id = c.execute('''SELECT id from swipe ORDER BY time DESC LIMIT 1''').fetchone()[0]
     
     user_item_db_info = c.execute(
-        '''SELECT * FROM items WHERE id=?''', (encoded_id,)
+        '''SELECT * FROM items WHERE id=?''', [encoded_id]
     ).fetchall()
 
 
