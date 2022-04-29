@@ -153,7 +153,7 @@ def tap_in(id):
                 "student",
                 current_time))
         else:
-            c.execute('''UPDATE users SET last_swiped=? WHERE id=?''', (datetime.datetime.now(), encoded_id))
+           pass
         
         
         c.execute('''INSERT INTO swipe (id, time) VALUES (?,?)''',
