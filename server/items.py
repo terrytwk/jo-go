@@ -172,18 +172,39 @@ def get_all_items(encoded_id):
     #     is_staff = True
     # else:
     #     is_staff = False
-    
+    # (id text, kerb text, first_name text, last_name text, user_type text, created_at timestamp)
 
-    items_limits_data = c.execute('''SELECT item_name, item_count FROM items WHERE id=?;''', (encoded_id, )).fetchall()
+    is_staff = False
+    if is_staff:
+        # get a list of student's IDs
+        distinct_id = c.execute('''SELECT DISTINCT id from items''').fetchall()
+        pass
+    else:
+        distinct_id = [[encoded_id]]
+    
+    students = [] # a list of lists with kerb, first_name, last_name 
+    for id in distinct_id:
+        student = c.execute('''SELECT id, kerb, first_name, last_name FROM users WHERE id=?''', (id[0],)).fetchone()
+        students.append(student)
+    
+    students_info = [] # dict containing first_name, last_name, kerb, and all items
+    for student in students:
+        single_student_info = {}
+        single_student_info["kerb"] = student[1]
+        single_student_info["first_name"] = student[2]
+        single_student_info["last_name"] = student[3]
+
+        # get student's items data
+        student_items = c.execute('''SELECT item_name, item_count FROM items WHERE id=?;''', (student[0], )).fetchall()
+        for item_name, item_count in student_items:
+            single_student_info[item_name] = item_count
+
+        students_info.append(single_student_info)
     
     conn.commit()
     conn.close()
-
-    all_items = {}
-    for item_name, item_count in items_limits_data:
-        all_items[item_name] = item_count
-
-    return json.dumps({"status": 200, "message": "successfully got user's items", "items": all_items})
+        
+    return json.dumps({"status": 200, "message": "successfully got user's items", "items": students_info})
 
 
 def get_all_item_limits(encoded_id):
