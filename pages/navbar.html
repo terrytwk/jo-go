@@ -3,14 +3,14 @@
     <label for="check" class="checkbtn">
         <i class="fa fa-bars"></i>
     </label>
-    <label class="logo"><a href="home.html" id="home-logo">Jo Go</a></label>
-    <ul>
+    <label class="logo"><a href="home.html" id="home-logo" class="nav-a">Jo Go</a></label>
+    <ul class="nav-ul">
         <!-- Add class="active" to make a link active -->
-        <li><a href="home.html" id="logo">Home</a></li>
-        <li id="dashboard-tab"><a href="dashboard.html">Dashboard</a></li>
-        <li><a href="project.html">Project</a></li>
-        <li id="login-tab"><a href="login.html">Login</a></li>
-        <li id="logout-tab" onclick="logout()"><a href="#">Logout</a></li>
+        <li class="nav-li"><a href="home.html" id="logo" class="nav-a">Home</a></li>
+        <li id="dashboard-tab" class="nav-li"><a href="dashboard.html" class="nav-a">Dashboard</a></li>
+        <li class="nav-li"><a href="project.html" class="nav-a">Project</a></li>
+        <li id="login-tab" class="nav-li"><a href="login.html" class="nav-a">Login</a></li>
+        <li id="logout-tab" class="nav-li" onclick="logout()"><a href="#" class="nav-a">Logout</a></li>
         <script>
             let token = localStorage.getItem("token")
             // user not logged in

@@ -11,7 +11,7 @@ body, html {
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
-    position: relative;
+    /* position: relative; */
   }
   
   /* Place text in the middle of the image */
