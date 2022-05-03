@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="login.css">
+    <link rel="stylesheet" href="navbar.css">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <script>
+        is_staff = localStorage.getItem("is_staff")
+        if (!is_staff) {
+            window.location.replace("login.html");
+        }
+
+        function signup() {
+            // only show signup form when a user is tapped in & admin
+            (function(window, document, undefined){
+            window.onload = init;
+
+            function init(){
+                // check if the user is tapped in 
+                // if yes, show the sign up form
+                // else, show a message "User must be tapped in to sign up the user"
+            }
+
+        })(window, document, undefined);
+
+            let kerb = document.getElementById('user-kerb').value
+            let id = document.getElementById('user-id').value
+            let firstName = document.getElementById('first-name').value
+            let lastName = document.getElementById('last-name').value
+            let error_msg = document.getElementById('error-msg')
+
+            // resetting error message
+            error_msg.innerHTML = ""
+
+            // fetch("http://608dev-2.net/sandbox/sc/team7/server/server.py", {
+            //     method: 'POST',
+            //     headers: {
+            //         'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+            //     },
+            //     body: new URLSearchParams({
+            //         'endpoint': 'login',
+            //         'kerb': kerb,
+            //         'id': id
+            //     })
+            // })
+            // .then(res => res.json())
+            // .then(data => {
+            //     console.log(data.status)
+            //     if (data.status == 200) {
+            //         console.log("login successful")
+            //         localStorage.setItem("user-name", data.name)
+            //         localStorage.setItem("token", data.token)
+            //         if (data.is_staff) {
+            //             localStorage.setItem("is_staff", data.is_staff)
+            //         }
+            //         window.location.replace("dashboard.html")
+            //     } else {
+            //         error_msg.innerHTML = data.message
+            //     }
+            // })
+            // .catch(err => console.log(err))
+        }
+    </script>
+</head>
+<body>
+    <div id="nav-placeholder">
+    </div>
+    <script>
+        $(function(){
+          $("#nav-placeholder").load("navbar.html");
+        });
+    </script>
+    
+    <form id="login-form" onsubmit="event.preventDefault(); signup()">
+        <span id="title">Welcome to Jo Go!</span>
+
+        <input type="text" id="user-kerb" placeholder="Kerberos (without @mit.edu)">
+
+        <input type="password" id="user-id" placeholder="ID Number">
+
+        <input type="text" id="last-name" placeholder="First Name">
+        
+        <input type="text" id="first-name" placeholder="Last Name">
+
+        <span id="error-msg"></span>
+
+        <input type="submit" value="Log In" id="submit-btn">
+    </form>
+
+</body>
+</html>

@@ -109,6 +109,8 @@ def signup(kerb, id, first_name, last_name):
         token (int) encrypted student id 
     """
 
+    # first check if the user logged in is a staff --> return authorization error
+
     if kerb is None or id is None or first_name is None or last_name is None or kerb == "" or id == "" or first_name == "" or last_name == "":
         return json.dumps({'status': 400, 'message': 'Must provode all required information.'}) 
 
@@ -126,6 +128,19 @@ def signup(kerb, id, first_name, last_name):
     conn.close()
 
     return json.dumps({'status': 200, "message": "Signup Successful", 'id': token, 'staff': False})
+
+
+def is_user_tapped_in():
+    """
+    Checks if a user is currently tapped in or not.
+
+    Returns:
+        boolean representing if a user is tapped in
+    """
+    # check the swipe table 
+    # return return json.dumps({'status': 200, "message": "A user is tapped in", "is_user_tapped_in": True})
+    # return return json.dumps({'status': 200, "message": "A user is NOT tapped in", "is_user_tapped_in": False})
+    pass
 
 
 def tap_in(id):
