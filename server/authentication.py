@@ -1,3 +1,4 @@
+from email import message
 import sqlite3
 import json
 import datetime
@@ -143,37 +144,72 @@ def is_user_tapped_in():
     pass
 
 
-def tap_in(id):
+def tap_in(token):
     """
     Taps user in. Creates user account if it does not exist already.
 
     Parameters:
-    * id (int): user's student id
+    * token (string): user's token from the student ID card
 
     Returns:
         token (int) encrypted student id 
     """
-    adfgvx = ADFGVX()
-    encoded_id = adfgvx.encrypt(id)[0]
     conn = sqlite3.connect(JOGO_DB_LOCATION)
     c = conn.cursor()
 
-    if id:
-        user_exists = c.execute('''SELECT id FROM USERS where id=?;''', (encoded_id, )).fetchone()
+    if token:
+        user_exists = c.execute('''SELECT token FROM USERS where token=?;''', (token, )).fetchone()
         current_time = datetime.datetime.now()
 
         if not user_exists:
-            c.execute('''INSERT INTO users (id, user_type, created_at) VALUES (?,?,?);''', (
-                encoded_id,
+            c.execute('''INSERT INTO users (token, user_type, created_at) VALUES (?,?,?);''', (
+                token,
                 "student",
                 current_time))
+        
+
+        # Get if there are any users in the table - if there are any reject it
+        card_currently_swiped = c.execute('''SELECT * FROM swipe where token=?;''', (token,)).fetchone()
+
+        if card_currently_swiped:
+            if card_currently_swiped[0] != token:
+                return json.dumps({"code": 400, "message": "error, another student is already tapped in"})
         else:
-           pass
-        
-        
-        c.execute('''INSERT INTO swipe (id, time) VALUES (?,?)''',
-                        (encoded_id, current_time))
+            ## add them to the currently swiped table
+            # 
+            c.execute('''INSERT INTO swipe (token) VALUES (?)''', (token, ))
 
     conn.commit()
     conn.close()
-    return json.dumps({"code": 200, "message": f'''student with id {encoded_id} successfully signed in''', "id": encoded_id})
+    return json.dumps({"code": 200, "message": f'''student with token {token} successfully signed in''', "token": token})
+
+def tap_out(token):
+    """
+    Taps user out. Removes them from the `swipe` table
+
+    Parameters:
+    * token (string): user's token from the student ID card
+
+    Returns:
+        token (int) encrypted student id 
+    """
+    conn = sqlite3.connect(JOGO_DB_LOCATION)
+    c = conn.cursor()
+
+    if token:
+        user_exists = c.execute('''SELECT token FROM USERS where token=?;''', (token, )).fetchone()
+
+        if not user_exists:
+            return json.dumps({"code": 400, "message": "error, user to be tapped out does not exist"})
+        
+        # Get if there are any users in the table
+        card_currently_swiped = c.execute('''SELECT * FROM swipe where token=?;''', (token,)).fetchone()
+
+        if card_currently_swiped:
+            c.execute('''DELETE FROM swipe''')     
+        else:
+            return json.dumps({"code": 400, "message": "error, there is no tapped in user."})
+
+    conn.commit()
+    conn.close()
+    return json.dumps({"code": 200, "message": f'''student with token {token} successfully signed out''', "token": token})

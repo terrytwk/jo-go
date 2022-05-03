@@ -17,7 +17,7 @@ def create_database():
     # id := encrypted user's student ID
     # user_type := enum {"student", "staff"} 
     c.execute(
-        '''CREATE TABLE IF NOT EXISTS users (id text, kerb text, first_name text, last_name text, user_type text, created_at timestamp);''')
+        '''CREATE TABLE IF NOT EXISTS users (id text, token text, kerb text, first_name text, last_name text, user_type text, created_at timestamp);''')
     
     # items table
     c.execute(
@@ -35,10 +35,9 @@ def create_database():
     )
 
     # swipe table
-    # stores currently tapped in user
-  
+    # stores currently tapped in user's token  
     c.execute(
-        '''CREATE TABLE IF NOT EXISTS swipe (id text, time timestamp);'''
+        '''CREATE TABLE IF NOT EXISTS swipe (token text);'''
     )
 
     conn.commit()
