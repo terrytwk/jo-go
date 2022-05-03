@@ -111,37 +111,65 @@ def signup(kerb, id, first_name, last_name):
     """
 
     # first check if the user logged in is a staff --> return authorization error
+    # user authorization
+    # access_level = c.execute(
+    #     '''SELECT user_type FROM users WHERE id=?''', (encoded_id, )
+    # ).fetchone()
+    # if access_level[0] != "staff":
+    #     return json.dumps({"status": "400", "message": "Error. User cannot set item limits."})
 
     if kerb is None or id is None or first_name is None or last_name is None or kerb == "" or id == "" or first_name == "" or last_name == "":
         return json.dumps({'status': 400, 'message': 'Must provode all required information.'}) 
 
     try:
         adfgvx = ADFGVX()
-        token = adfgvx.encrypt(id)[0] 
+        encoded_id = adfgvx.encrypt(id)[0] 
     except Exception as error:
         return json.dumps({'status': 401, 'message': "Signup Unsuccessful", "error": error})
 
     conn = sqlite3.connect(JOGO_DB_LOCATION)
     c = conn.cursor()
+
+    # get tapped in user's token
+    tapped_in_token = c.execute('''SELECT * FROM swipe''').fetchone()
+
+    # no user is tapped in
+    if not tapped_in_token:
+        return json.dumps({'status': 400, "message": "Student must tap the student ID before signing up"})
+
+    # complete user's sign up by filling up all the user's information
     c.execute(
-        '''INSERT INTO users (id, kerb, first_name, last_name, user_type, created_at) VALUES (?, ?, ?, ?, ?, ?);''', (token, kerb, first_name, last_name, "student", datetime.datetime.now()))
+            '''UPDATE users SET id=?, kerb=?, first_name=?, last_name=? WHERE token=?''', (encoded_id, kerb, first_name, last_name, tapped_in_token[0])
+    )
+
     conn.commit()
     conn.close()
 
-    return json.dumps({'status': 200, "message": "Signup Successful", 'id': token, 'staff': False})
+    return json.dumps({'status': 200, "message": "Signup Successful", 'id': encoded_id, 'staff': False})
 
 
-def is_user_tapped_in():
+def tapped_in_user():
     """
     Checks if a user is currently tapped in or not.
 
     Returns:
         boolean representing if a user is tapped in
     """
+    conn = sqlite3.connect(JOGO_DB_LOCATION)
+    c = conn.cursor()
+
     # check the swipe table 
-    # return return json.dumps({'status': 200, "message": "A user is tapped in", "is_user_tapped_in": True})
-    # return return json.dumps({'status': 200, "message": "A user is NOT tapped in", "is_user_tapped_in": False})
-    pass
+    tapped_in_token = c.execute('''SELECT * FROM swipe''').fetchone()
+
+    conn.commit()
+    conn.close()
+
+    # user is tapped in
+    if tapped_in_token:
+        return json.dumps({'status': 200, "message": "A user is tapped in", "is_user_tapped_in": True, "user": tapped_in_token})
+    else: 
+        return json.dumps({'status': 200, "message": "A user is NOT tapped in", "is_user_tapped_in": False}) 
+
 
 
 def tap_in(token):
@@ -177,7 +205,7 @@ def tap_in(token):
         else:
             ## add them to the currently swiped table
             # 
-            c.execute('''INSERT INTO swipe (token) VALUES (?)''', (token, ))
+            c.execute('''INSERT INTO swipe (token) VALUES (?);''', (token, ))
 
     conn.commit()
     conn.close()
@@ -213,3 +241,14 @@ def tap_out(token):
     conn.commit()
     conn.close()
     return json.dumps({"code": 200, "message": f'''student with token {token} successfully signed out''', "token": token})
+
+
+def get_all_users():
+    conn = sqlite3.connect(JOGO_DB_LOCATION)
+    c = conn.cursor()
+
+    all_users = c.execute('''SELECT * FROM users;''').fetchall()
+
+    conn.commit()
+    conn.close()
+    return json.dumps(all_users) 

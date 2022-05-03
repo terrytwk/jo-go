@@ -5,7 +5,7 @@ sys.path.append('/var/jail/home/team7/server')
 def request_handler(request):
     # importing functions
     from database import create_database
-    from authentication import login, signup, tap_in, tap_out, ADFGVX
+    from authentication import login, signup, tap_in, tap_out, tapped_in_user, get_all_users
     from items import change_item_count, get_items, set_item_limit, get_all_items, get_all_item_limits
 
     # initialize databases
@@ -66,11 +66,15 @@ def request_handler(request):
         id = params.get("id", None)
         item = params.get("item", None)
         return get_items(id, item)
+    elif method == "GET" and endpoint == "tapped-user":
+        return tapped_in_user()
     # for testing ---------------------------------------------------------------------------------
     elif method == "POST" and endpoint == "test":
        return json.dumps({'status': 200, 'message': f"POST request received. \n Request: {request}"}) 
     elif method == "GET" and endpoint == "test":
-       return json.dumps({'status': 200, 'message': f"GET request received. \n Request: {request}"}) 
+       return json.dumps({'status': 200, 'message': f"GET request received. \n Request: {request}"})
+    elif method == "GET" and endpoint == "all-users":
+        return get_all_users()
     else:
         return json.dumps({'status': 404, 'message': f"Request: {request} \n The endpoint does not exist."})
 

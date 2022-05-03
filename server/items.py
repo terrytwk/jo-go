@@ -19,10 +19,6 @@ def change_item_count(item_name, item_count):
     Returns:
         success or fail (if borrowed amount is more than max limit) message and user's total number borrowed of that item
     """
-    # add the transaction to history table
-    # get id from swipe table
-    # edit the items table
-    # return the total number of items
 
     conn = sqlite3.connect(JOGO_DB_LOCATION)
     c = conn.cursor()
