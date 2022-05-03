@@ -28,7 +28,9 @@ def change_item_count(item_name, item_count):
     c = conn.cursor()
     status = 200
 
-    encoded_id = c.execute('''SELECT id from swipe ORDER BY time DESC LIMIT 1''').fetchone()[0]
+    # add another step - get token from swipe, id from users
+    token = c.execute('''SELECT * from swipe''').fetchone()[0]
+    encoded_id = encoded_id = c.execute('''SELECT id from USERS WHERE token=?''', (token,)).fetchone()[0]
     item_limit = c.execute('''SELECT max_limit from item_limits WHERE item_name=?''', (item_name, )).fetchone()
     prev_items = c.execute('''SELECT item_count from items WHERE id=? AND item_name=?''', (encoded_id, item_name)).fetchone()
 
@@ -82,7 +84,6 @@ def get_items(id=None, item=None):
     # encrypt the id
     # get all the items and their counts from items table
     cipher = ADFGVX()
-
     user_items = {"status": 200, "message": "GET request successful."}
     conn = sqlite3.connect(JOGO_DB_LOCATION)
     c = conn.cursor()
@@ -91,7 +92,9 @@ def get_items(id=None, item=None):
     if id != None:
         encoded_id = cipher.encrypt(id)
     else:
-        encoded_id = c.execute('''SELECT id from swipe ORDER BY time DESC LIMIT 1''').fetchone()[0]
+        # add another step - get token from swipe, id from users
+        token = c.execute('''SELECT * from swipe''').fetchone()[0]
+        encoded_id = c.execute('''SELECT id from USERS WHERE token=?''', (token,)).fetchone()[0]
     
     user_item_db_info = c.execute(
         '''SELECT * FROM items WHERE id=?''', [encoded_id]
