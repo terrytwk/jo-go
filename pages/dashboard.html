@@ -72,23 +72,27 @@
             .then(res => res.json())
             .then(data => {
                 // insert into table
-                let headerList = Object.keys(data.items)
-                let contentList = Object.values(data.items)
+                let itemNameList = Object.keys(data.items)
+                let itemMaxLimitList = Object.values(data.items)
                 let table = document.getElementById(elementID)
                 let content = `
                     <tr>
-                        ${headerList.map((h) => `<th>${h}</th>`).join("")}
+                        <th>Item Name</th>
+                        <th>Max Limit</th>
                     </tr>
-                    <tr>
-                        ${contentList.map((c) => `<td>${c}</td>`).join("")}
-                    </tr>
+                    ${
+                        itemNameList.map((itemName, index) => `
+                        <tr>
+                            <td>${itemName}</td>
+                            <td>${itemMaxLimitList[index]}</td>
+                        </tr>
+                        `).join("") 
+                    }
                 `
                 table.innerHTML = content
             })
             .catch(err => console.log(err)) 
         }
-
-
         // function to change limit on the number of items
         function changeLimit() {
             let itemName = document.getElementById('item-name').value
