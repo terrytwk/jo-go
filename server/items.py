@@ -129,8 +129,6 @@ def set_item_limit(encoded_id, item_name, item_limit):
     Returns:
         item_name and item_limit
     """
-    # check if the id is staff's
-    # change item_limits table
     conn = sqlite3.connect(JOGO_DB_LOCATION)
     c = conn.cursor()
 
@@ -140,17 +138,20 @@ def set_item_limit(encoded_id, item_name, item_limit):
     # ).fetchone()
     # if access_level[0] != "staff":
     #     return json.dumps({"status": "400", "message": "Error. User cannot set item limits."})
-    
-    item_exists = c.execute('''SELECT * FROM item_limits WHERE item_name=?''', (item_name, )).fetchone()
 
-    if item_exists:
+    item_exists = c.execute('''SELECT * FROM item_limits WHERE item_name=?;''', (item_name, )).fetchone()
+
+    if int(item_limit) < 0: # delete item limit
+        c.execute('''DELETE FROM item_limits WHERE item_name=?;''', (item_name,))
+        action = "deleted"
+    elif item_exists: # update
         c.execute(
-            '''UPDATE item_limits SET max_limit=? WHERE item_name=?''', (item_limit, item_name)
+            '''UPDATE item_limits SET max_limit=? WHERE item_name=?;''', (item_limit, item_name)
         )
         action = "updated"
-    else:
+    else: # insert
         c.execute(
-            '''INSERT INTO item_limits (item_name, max_limit) VALUES (?, ?)''',
+            '''INSERT INTO item_limits (item_name, max_limit) VALUES (?, ?);''',
             (item_name, item_limit)
         )
         action = "added"    
@@ -183,7 +184,7 @@ def get_all_items(encoded_id):
     
     students = [] # a list of lists with kerb, first_name, last_name 
     for id in distinct_id:
-        student = c.execute('''SELECT id, kerb, first_name, last_name FROM users WHERE id=?''', (id[0],)).fetchone()
+        student = c.execute('''SELECT id, kerb, first_name, last_name FROM users WHERE id=?;''', (id[0],)).fetchone()
         students.append(student)
     
     students_info = [] # dict containing first_name, last_name, kerb, and all items
