@@ -3,17 +3,17 @@ body {
     flex-direction: column;
     height: 100%;
 }
-#login-form {
+.login-form {
     display: flex;
     flex-direction: column;
     width: 30%;
-    height: 400px;
     align-self: center;
     justify-content: center;
     padding: 20px;
+    margin-top: 20px;
 }
 
-#title {
+.title {
     font-size: 30px;
     margin-bottom: 40px;
 }
@@ -42,7 +42,7 @@ input {
 }
 
 @media (max-width: 1225px) {
-    #login-form {
+    .login-form {
         width: 80%;
     }
 }
