@@ -205,7 +205,7 @@ def tap_in(token):
         else:
             ## add them to the currently swiped table
             # 
-            c.execute('''INSERT INTO swipe (token) VALUES (?);''', (token, ))
+            c.execute('''INSERT INTO swipe (token) VALUES (?)''', (token, ))
 
     conn.commit()
     conn.close()
