@@ -105,8 +105,8 @@ def get_items(id=None, item=None):
         user_items[item] = 0
           
     else:
-        for id, item, item_count in user_item_db_info:
-            user_items[item] = item_count
+        for id, item_curr, item_count in user_item_db_info:
+            user_items[item_curr] = item_count
     
     conn.commit()
     conn.close()
@@ -165,21 +165,19 @@ def get_all_items(encoded_id):
     conn = sqlite3.connect(JOGO_DB_LOCATION)
     c = conn.cursor()
 
-    # access_level = c.execute(
-    #     '''SELECT user_type FROM users WHERE id=?''', (encoded_id, )
-    # ).fetchone()
-    # if access_level[0] != "staff":
-    #     is_staff = True
-    # else:
-    #     is_staff = False
-    # (id text, kerb text, first_name text, last_name text, user_type text, created_at timestamp)
-
-    is_staff = False
-    if is_staff:
+    # user authorization
+    access_level = c.execute(
+        '''SELECT user_type FROM users WHERE id=?''', (encoded_id, )
+    ).fetchone()
+    if access_level[0] == "staff":
+        is_staff = True
+    else:
+        is_staff = False
+    
+    if is_staff: # list all users in the database
         # get a list of student's IDs
         distinct_id = c.execute('''SELECT DISTINCT id from items''').fetchall()
-        pass
-    else:
+    else: # list only the currently signed in user
         distinct_id = [[encoded_id]]
     
     students = [] # a list of lists with kerb, first_name, last_name 
@@ -189,17 +187,20 @@ def get_all_items(encoded_id):
     
     students_info = [] # dict containing first_name, last_name, kerb, and all items
     for student in students:
-        single_student_info = {}
-        single_student_info["kerb"] = student[1]
-        single_student_info["first_name"] = student[2]
-        single_student_info["last_name"] = student[3]
+        try:
+            single_student_info = {}
+            single_student_info["kerb"] = student[1]
+            single_student_info["first_name"] = student[2]
+            single_student_info["last_name"] = student[3]
 
-        # get student's items data
-        student_items = c.execute('''SELECT item_name, item_count FROM items WHERE id=?;''', (student[0], )).fetchall()
-        for item_name, item_count in student_items:
-            single_student_info[item_name] = item_count
+            # get student's items data
+            student_items = c.execute('''SELECT item_name, item_count FROM items WHERE id=?;''', (student[0], )).fetchall()
+            for item_name, item_count in student_items:
+                single_student_info[item_name] = item_count
 
-        students_info.append(single_student_info)
+            students_info.append(single_student_info)
+        except:
+            pass
     
     conn.commit()
     conn.close()
