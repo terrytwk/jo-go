@@ -133,6 +133,12 @@ def signup(kerb, id, first_name, last_name):
     # get tapped in user's token
     tapped_in_token = c.execute('''SELECT * FROM swipe''').fetchone()
 
+    # checking duplicate user
+    user = c.execute(
+        '''SELECT kerb FROM users WHERE id=?;''', (encoded_id,)).fetchone()
+    if user:
+        return json.dumps({'status': 401, 'message': "User with the same ID already exists."}) 
+
     # no user is tapped in
     if not tapped_in_token:
         return json.dumps({'status': 400, "message": "Student must tap the student ID before signing up"})
