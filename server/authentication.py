@@ -255,6 +255,6 @@ def get_all_users():
 
     all_users = c.execute('''SELECT * FROM users;''').fetchall()
 
-    conn.commit()
+    conn.commit()   
     conn.close()
     return json.dumps(all_users) 
