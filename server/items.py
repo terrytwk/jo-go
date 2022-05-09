@@ -26,7 +26,7 @@ def change_item_count(item_name, item_count):
 
     # add another step - get token from swipe, id from users
     token = c.execute('''SELECT * from swipe''').fetchone()[0]
-    encoded_id = encoded_id = c.execute('''SELECT id from USERS WHERE token=?''', (token,)).fetchone()[0]
+    encoded_id = c.execute('''SELECT id from USERS WHERE token=?''', (token,)).fetchone()[0]
     item_limit = c.execute('''SELECT max_limit from item_limits WHERE item_name=?''', (item_name, )).fetchone()
     prev_items = c.execute('''SELECT item_count from items WHERE id=? AND item_name=?''', (encoded_id, item_name)).fetchone()
 
